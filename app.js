@@ -3,45 +3,72 @@ import path from 'path';
 import { marked } from 'marked';
 import * as fs from 'node:fs';
 
+///////////////
+// Variables //
+///////////////
+
 const app = express();
 const port = 80;
 const __dirname = path.resolve();
 const root_dir = __dirname;
 const views_dir = root_dir + '/views';
 const docs_dir = root_dir + '/docs';
-const public_dir = root_dir + '/public';
 
 app.set('views', views_dir);
 app.set('view engine', 'ejs');
 
-app.use(express.static(public_dir))
-
 app.get('/', (req, res) => {
-    res.render('home.ejs', {title:'EJS : EXPRESS TEMPLATE ENGINE'});
+    res.redirect('/index.md');
 });
 
-app.get(['/docs/:filename', '/docs/:category/:filename'], doc_handler);
+app.get('*.md', doc_handler);
+
+app.use(express.static(docs_dir))
 
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`); 
 });
 
-function doc_handler(req, res) {
+///////////////////////
+// Handler functions //
+///////////////////////
 
-    var md = function (url) {
-       var filepath = docs_dir + "/" + url;
-       var content = fs.readFileSync(filepath, 'utf8');
+function doc_handler(req, res) {
+    var md = function(url) {
+       var content = fs.readFileSync(docs_dir + url, 'utf8');
        var html = marked(content, {"mangle": false, headerIds: false});
        return html;
     };
  
-    if (req.params.category)
-        var docpath = req.params.category + '/' + req.params.filename;
-    else
-        var docpath = req.params.filename;
+    var title = get_title(req.url);
+    console.log(title);
 
-    res.render('docs.ejs', {"md": md,
-                            "docpath": docpath,
-                            mangle:false});
+    res.render('template.ejs', {"md": md, "title": title, "docpath": req.url});
  }
  
+ function get_title(url) {
+    var content = fs.readFileSync(docs_dir + url, 'utf8');
+    var metadata = get_metadata(content);
+
+    return metadata["title"];
+ }
+
+ function get_metadata(markdown) {
+    const metadataRegex = /^---([\s\S]*?)---/;
+    const metadataMatch = markdown.match(metadataRegex);
+  
+    if (!metadataMatch) {
+      return {};
+    }
+
+    const metadataLines = metadataMatch[1].split("\n");
+  
+    const metadata = metadataLines.reduce((acc, line) => {
+      const [key, value] = line.split(":").map(part => part.trim());
+      if (key)
+        acc[key] = value;
+      return acc;
+    }, {});
+  
+    return metadata;
+}
