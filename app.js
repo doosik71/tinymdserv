@@ -29,46 +29,24 @@ app.listen(port, () => {
     console.log(`Now listening on port ${port}`); 
 });
 
+app.get('*', (req, res) => {
+    res.status(404).send('404 Not Found!');
+});
+  
 ///////////////////////
 // Handler functions //
 ///////////////////////
 
 function doc_handler(req, res) {
-    var md = function(url) {
-       var content = fs.readFileSync(docs_dir + url, 'utf8');
-       var html = marked(content, {"mangle": false, headerIds: false});
-       return html;
-    };
- 
-    var title = get_title(req.url);
-    console.log(title);
+    try {
+        var doc = fs.readFileSync(docs_dir + req.url, 'utf8');
+        var title = doc.match(/^# .*?(?=\r?\n)/);
+        var content = marked(doc, {"mangle": false, headerIds: false});
 
-    res.render('template.ejs', {"md": md, "title": title, "docpath": req.url});
- }
- 
- function get_title(url) {
-    var content = fs.readFileSync(docs_dir + url, 'utf8');
-    var metadata = get_metadata(content);
+        title = title ? title[0].substring(1).trim() : req.url;
 
-    return metadata["title"];
- }
-
- function get_metadata(markdown) {
-    const metadataRegex = /^---([\s\S]*?)---/;
-    const metadataMatch = markdown.match(metadataRegex);
-  
-    if (!metadataMatch) {
-      return {};
+        res.render('template.ejs', {"title": title, "content": content});
+    } catch (error) {
+        res.status(500).send('Internal error!');
     }
-
-    const metadataLines = metadataMatch[1].split("\n");
-  
-    const metadata = metadataLines.reduce((acc, line) => {
-      const [key, value] = line.split(":").map(part => part.trim());
-      if (key)
-        acc[key] = value;
-      return acc;
-    }, {});
-  
-    return metadata;
 }
