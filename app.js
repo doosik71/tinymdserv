@@ -8,13 +8,16 @@ import * as fs from 'node:fs';
 ///////////////
 
 const app = express();
-const port = 80;
-const __dirname = path.resolve();
-const root_dir = __dirname;
-const views_dir = root_dir + '/views';
-const docs_dir = root_dir + '/docs';
 
-app.set('views', views_dir);
+// Get port number from command line arguments.
+var argnum = parseInt(process.argv.slice(2)[0]);
+const port = isNaN(argnum) ? 80 : argnum;
+
+// Set root path and docs path.
+const root_path = path.resolve();
+const docs_path = root_path + '/docs';
+
+app.set('views', docs_path);
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
@@ -23,7 +26,7 @@ app.get('/', (req, res) => {
 
 app.get('*.md', doc_handler);
 
-app.use(express.static(docs_dir))
+app.use(express.static(docs_path))
 
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`); 
@@ -39,7 +42,8 @@ app.get('*', (req, res) => {
 
 function doc_handler(req, res) {
     try {
-        var doc = fs.readFileSync(docs_dir + req.url, 'utf8');
+        var doc = fs.readFileSync(docs_path + req.url, 'utf8');
+        // Get first caption starting with '#'.
         var title = doc.match(/^# .*?(?=\r?\n)/);
         var content = marked(doc, {"mangle": false, headerIds: false});
 
