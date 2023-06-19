@@ -1,26 +1,29 @@
 {
   "name": "tinymdserv",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Tiny Markdown Server",
+  "preferGlobal": true,
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "Tiny",
     "Markdown",
-    "Serv",
-    "Tiny"
+    "Server"
   ],
   "author": "Doosik Kim",
   "license": "ISC",
-  "type": "module",
   "bin": {
     "tinymdserv": "./app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doosik71/tinymdserv.git"
   },
   "dependencies": {
     "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "marked": "^5.1.0",
-    "nodemon": "^2.0.22"
+    "marked": "^5.1.0"
   }
 }
