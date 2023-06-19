@@ -1,20 +1,22 @@
 {
-  "name": "paperbook",
+  "name": "tinymdserv",
   "version": "1.0.0",
-  "description": "Collection of Research Paper",
-  "main": "index.js",
+  "description": "Tiny Markdown Server",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "Research",
-    "Paper",
-    "Content",
-    "Management"
+    "Markdown",
+    "Serv",
+    "Tiny"
   ],
   "author": "Doosik Kim",
   "license": "ISC",
   "type": "module",
+  "bin": {
+    "tinymdserv": "./app.js"
+  },
   "dependencies": {
     "ejs": "^3.1.9",
     "express": "^4.18.2",

@@ -1,12 +1,9 @@
-# PaperBook
+# TinyMDServ
 
 ## Install
 
-1. Install node
-2. Install required package
-
 ```
-npm install ejs express marked
+npm install -g tinymdserv
 ```
 
 ## Edit
@@ -39,5 +36,5 @@ Hello
 ## Run
 
 ```
-node app.js 80
+tinymdserv 80
 ```
