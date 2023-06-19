@@ -1,11 +1,12 @@
 {
   "name": "tinymdserv",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Tiny Markdown Server",
   "preferGlobal": true,
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./app.js"
   },
   "keywords": [
     "Tiny",
@@ -15,7 +16,7 @@
   "author": "Doosik Kim",
   "license": "ISC",
   "bin": {
-    "tinymdserv": "./app.js"
+    "tinymdserv": "node ./app.js"
   },
   "repository": {
     "type": "git",
