@@ -26,31 +26,82 @@ app.get('/', (req, res) => {
 
 app.get('*.md', doc_handler);
 
+app.get('*.mp4', mp4_handler);
+
 app.use(express.static(docs_path))
 
 app.listen(port, () => {
-    console.log(`Now listening on port ${port}`); 
+    console.log(`Now listening on port ${port}`);
 });
 
 app.get('*', (req, res) => {
     res.status(404).send('404 Not Found!');
 });
-  
+
 ///////////////////////
 // Handler functions //
 ///////////////////////
 
+const datetime_option = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+};
+
 function doc_handler(req, res) {
     try {
+        console.log(`[${(new Date()).toLocaleString('en-US', datetime_option)}] ${req.url}`);
+
         var doc = fs.readFileSync(docs_path + req.url, 'utf8');
-        // Get first caption starting with '#'.
-        var title = doc.match(/^# .*?(?=\r?\n)/);
-        var content = marked(doc, {"mangle": false, headerIds: false});
-
+        var title = doc.match(/^# .*?(?=\r?\n)/);  // Get first caption starting with '#'.
         title = title ? title[0].substring(1).trim() : req.url;
-
-        res.render('template.ejs', {"title": title, "content": content});
+        var content = marked(doc, { "mangle": false, headerIds: false });
+        res.render('template.ejs', { "title": title, "content": content });
     } catch (error) {
         res.status(500).send('Internal error!');
+    }
+}
+
+function mp4_handler(req, res) {
+    try {
+        console.log(`[${(new Date()).toLocaleString('en-US', datetime_option)}] ${req.url}`);
+
+        const video_path = docs_path + req.url;
+        const video_size = fs.statSync(video_path).size;
+        const range = req.headers.range;
+        const CHUNK_SIZE = 10 ** 6;  // 1MB
+
+        res.setHeader('Content-Type', 'video/mp4');
+        res.setHeader('Content-Disposition', 'inline');
+
+        if (range) {
+            const [start, end] = range.replace(/bytes=/, '').split('-');
+            const start_pos = parseInt(start);
+            var end_pos = parseInt(end);
+            end_pos = isNaN(end_pos) ? video_size - 1 : end_pos;
+            const content_length = end_pos - start_pos + 1;
+
+            res.status(206).header({
+                'Content-Range': `bytes ${start_pos}-${end_pos}/${video_size}`,
+                'Accept-Ranges': 'bytes',
+                'Content-Length': content_length,
+            });
+
+            const video_stream = fs.createReadStream(video_path, { start: start_pos, end: end_pos });
+            video_stream.pipe(res);
+        } else {
+            res.status(200).header({
+                'Content-Length': video_size,
+            });
+
+            const video_stream = fs.createReadStream(video_path, { highWaterMark: CHUNK_SIZE });
+            video_stream.pipe(res);
+        }
+    } catch (error) {
+        res.status(500).send(`Internal error!: ${error}.`);
     }
 }
