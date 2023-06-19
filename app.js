@@ -54,7 +54,7 @@ const datetime_option = {
 
 function doc_handler(req, res) {
     try {
-        console.log(`[${(new Date()).toLocaleString('en-US', datetime_option)}] ${req.url}`);
+        console.log(`${(new Date()).toLocaleString('en-US', datetime_option)}, ${req.socket.remoteAddress}, ${req.url}`);
 
         var doc = fs.readFileSync(docs_path + req.url, 'utf8');
         var title = doc.match(/^# .*?(?=\r?\n)/);  // Get first caption starting with '#'.
@@ -68,7 +68,7 @@ function doc_handler(req, res) {
 
 function mp4_handler(req, res) {
     try {
-        console.log(`[${(new Date()).toLocaleString('en-US', datetime_option)}] ${req.url}`);
+        console.log(`${(new Date()).toLocaleString('en-US', datetime_option)}, ${req.socket.remoteAddress}, ${req.url}`);
 
         const video_path = docs_path + req.url;
         const video_size = fs.statSync(video_path).size;
