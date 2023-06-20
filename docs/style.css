@@ -1,0 +1,142 @@
+:root {
+    /* Browser default font-size is 16px, this way 1 rem = 10px */
+    font-size: 62.5%;
+}
+
+html {
+    text-size-adjust: none;
+}
+
+body {
+    margin: 1rem;
+    font-size: 1.6rem;
+    display: flex;
+    overflow-x: hidden;
+    justify-content: center;
+}
+
+.container {
+    max-width: 8in;
+    width: 100%;
+    padding: 0px;
+    overflow-wrap: break-word;
+}
+
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+h1 {
+    font-size: 2em;
+    padding: 0.2em;
+    background-color: azure;
+    border-top: 3px solid lightskyblue;
+    border-bottom: 3px solid lightskyblue;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1.3em;
+}
+
+h4 {
+    font-size: 1.2em;
+}
+
+h5 {
+    font-size: 1.1em;
+}
+
+h6 {
+    font-size: 1em;
+}
+
+h2::before {
+    font-size: 80%;
+    color: lightgray;
+    display: inline-block;
+    content: "H2";
+    margin-left: -50px;
+    width: 50px;
+}
+
+h3::before {
+    font-size: 80%;
+    color: lightgray;
+    display: inline-block;
+    content: "H3";
+    margin-left: -45px;
+    width: 45px;
+}
+
+h4::before {
+    font-size: 80%;
+    color: lightgray;
+    display: inline-block;
+    content: "H4";
+    margin-left: -42px;
+    width: 42px;
+}
+
+h5::before {
+    font-size: 80%;
+    color: lightgray;
+    display: inline-block;
+    content: "H5";
+    margin-left: -39px;
+    width: 39px;
+}
+
+h6::before {
+    font-size: 80%;
+    color: lightgray;
+    display: inline-block;
+    content: "H6";
+    margin-left: -37px;
+    width: 37px;
+}
+
+table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table:has(tbody) td {
+    padding: 3px 5px;
+    border: 1px lightgray solid;
+}
+
+table:has(tbody) thead {
+    background: azure;
+}
+
+table:has(tbody) thead th {
+    padding: 3px 5px;
+    border: 1px lightgray solid;
+}
+
+table:has(tbody) thead tr {
+    border: 1px lightgray solid;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+hr {
+    margin: 16px 0px;
+    border-color: lightskyblue;
+}

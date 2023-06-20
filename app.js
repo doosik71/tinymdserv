@@ -37,8 +37,19 @@ app.listen(port, () => {
 });
 
 app.get('*', (req, res) => {
-    req.url += req.url.endsWith('/') ? 'index.md' : '.md';
-    doc_handler(req, res);
+    const req_url = decodeURIComponent(req.url);
+    const postfix = [".md", "index.md", "/index.md"]
+
+    for (let i = 0; i < postfix.length; i++) {
+        try {
+            fs.accessSync(docs_path + req_url + postfix[i], fs.constants.F_OK);
+            res.redirect(req_url + postfix[i]);
+            return;
+        } catch (error) {
+        }
+    }
+
+    res.status(404).send('404 Not Found!');
 });
 
 ///////////////////////

@@ -1,12 +1,13 @@
 {
   "name": "tinymdserv",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Tiny Markdown Server",
   "preferGlobal": true,
-  "main": "lib/cli.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node lib/cli.js"
+    "start": "node app.js",
+    "mon": "nodemon app.js"
   },
   "keywords": [
     "Tiny",
@@ -16,7 +17,7 @@
   "author": "Doosik Kim",
   "license": "ISC",
   "bin": {
-    "tinymdserv": "lib/cli.js"
+    "tinymdserv": "app.js"
   },
   "type": "module",
   "repository": {
