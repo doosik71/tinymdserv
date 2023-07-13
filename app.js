@@ -16,8 +16,10 @@ var argnum = parseInt(process.argv.slice(2)[0]);
 const port = isNaN(argnum) ? 80 : argnum;
 
 // Set root path and docs path.
-const root_path = path.resolve();
-const docs_path = root_path + '/docs';
+var docs_path = process.argv.slice(3)[0];
+if (docs_path == undefined) {
+    docs_path = path.resolve() + '/docs';
+}
 
 app.set('views', docs_path);
 app.set('view engine', 'ejs');
@@ -28,29 +30,17 @@ app.get('/', (req, res) => {
 
 app.get('*.md', doc_handler);
 
+app.get('*.__datetime__', datetime_handler);
+
 app.get('*.mp4', mp4_handler);
 
 app.use(express.static(docs_path))
 
 app.listen(port, () => {
-    console.log(`Now listening on port ${port}`);
+    console.log(`Now listening on port ${port} with docs_path=${docs_path}`);
 });
 
-app.get('*', (req, res) => {
-    const req_url = decodeURIComponent(req.url);
-    const postfix = [".md", "index.md", "/index.md"]
-
-    for (let i = 0; i < postfix.length; i++) {
-        try {
-            fs.accessSync(docs_path + req_url + postfix[i], fs.constants.F_OK);
-            res.redirect(req_url + postfix[i]);
-            return;
-        } catch (error) {
-        }
-    }
-
-    res.status(404).send('404 Not Found!');
-});
+app.get('*', default_handler);
 
 ///////////////////////
 // Handler functions //
@@ -76,6 +66,23 @@ function doc_handler(req, res) {
         title = title ? title[0].substring(1).trim() : req_url;
         var content = marked(doc, { "mangle": false, headerIds: false });
         res.render('template.ejs', { "title": title, "content": content });
+    } catch (error) {
+        res.status(500).send('Internal error!');
+    }
+}
+
+function datetime_handler(req, res) {
+    try {
+        const req_url = decodeURIComponent(req.url);
+        const file_path = req_url.substring(0, req_url.length - '.__datetime__'.length);
+
+        fs.stat(docs_path + file_path, function(err, stats){
+            if (err) {
+                res.status(400).send('Bad request!');        
+            } else {
+                res.send(stats.mtime.toLocaleString());
+            }
+        });
     } catch (error) {
         res.status(500).send('Internal error!');
     }
@@ -120,4 +127,20 @@ function mp4_handler(req, res) {
     } catch (error) {
         res.status(500).send(`Internal error!: ${error}.`);
     }
+}
+
+function default_handler(req, res) {
+    const req_url = decodeURIComponent(req.url);
+    const postfix = [".md", "index.md", "/index.md"]
+
+    for (let i = 0; i < postfix.length; i++) {
+        try {
+            fs.accessSync(docs_path + req_url + postfix[i], fs.constants.F_OK);
+            res.redirect(req_url + postfix[i]);
+            return;
+        } catch (error) {
+        }
+    }
+
+    res.status(404).send('404 Not Found!');
 }

@@ -2,23 +2,23 @@
 
 ## Install
 
-```
+```bash
 npm install -g tinymdserv
 ```
 
 ## Edit
 
-1. Create home page docs/index.md
+- Create home page docs/index.md
 
-```
+```markdown
 # Home
 
 Hello
 ```
 
-2. Create template docs/template.ejs
+- Create template docs/template.ejs
 
-```
+```html
 <html>
 <head>
 <meta charset="utf-8" />
@@ -35,6 +35,19 @@ Hello
 
 ## Run
 
+```bash
+tinymdserv [<port_number>] [<docs_full_path>]
 ```
+
+- Default port number is 80.
+- Default document path is docs under current path.
+
+### Example
+
+```bash
 tinymdserv 80
+```
+
+```bash
+tinymdserv 80 C:\docs
 ```

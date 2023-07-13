@@ -4,11 +4,14 @@
 }
 
 html {
+    font-family: "Open Sans", sans-serif;
+    color: black;
+    background-color: white;
     text-size-adjust: none;
 }
 
 body {
-    margin: 1rem;
+    margin: 1em;
     font-size: 1.6rem;
     display: flex;
     overflow-x: hidden;
@@ -19,113 +22,142 @@ body {
     max-width: 8in;
     width: 100%;
     padding: 0px;
-    overflow-wrap: break-word;
 }
 
 a {
     text-decoration: none;
+    color: dodgerblue;
 }
 
-h1, h2, h3, h4, h5, h6 {
+a:hover {
+    text-decoration: underline;
+}
+
+h1 {
     margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+h2, h3, h4, h5, h6 {
+    margin-top: 1em;
     margin-bottom: 0.5em;
 }
 
 h1 {
     font-size: 2em;
-    padding: 0.2em;
+    font-weight: bold;
     background-color: azure;
+    padding: 0.2em;
     border-top: 3px solid lightskyblue;
     border-bottom: 3px solid lightskyblue;
 }
 
 h2 {
     font-size: 1.6em;
+    font-weight: bold;
+    border-bottom: 2px solid lightgray;
 }
 
 h3 {
     font-size: 1.3em;
+    font-weight: bold;
 }
 
 h4 {
     font-size: 1.2em;
+    font-weight: bold;
 }
 
 h5 {
     font-size: 1.1em;
+    font-weight: bold;
 }
 
 h6 {
     font-size: 1em;
+    font-weight: bold;
+}
+
+h1::before {
+    font-size: 80%;
+    color: lightgray;
+    display: inline-block;
+    content: "<H1>";
+    margin-left: -3.5em;
+    width: 3.5em;
 }
 
 h2::before {
     font-size: 80%;
     color: lightgray;
     display: inline-block;
-    content: "H2";
-    margin-left: -50px;
-    width: 50px;
+    content: "<H2>";
+    margin-left: -3.5em;
+    width: 3.5em;
 }
 
 h3::before {
     font-size: 80%;
     color: lightgray;
     display: inline-block;
-    content: "H3";
-    margin-left: -45px;
-    width: 45px;
+    content: "<H3>";
+    margin-left: -3.5em;
+    width: 3.5em;
 }
 
 h4::before {
     font-size: 80%;
     color: lightgray;
     display: inline-block;
-    content: "H4";
-    margin-left: -42px;
-    width: 42px;
+    content: "<H4>";
+    margin-left: -3.5em;
+    width: 3.5em;
 }
 
 h5::before {
     font-size: 80%;
     color: lightgray;
     display: inline-block;
-    content: "H5";
-    margin-left: -39px;
-    width: 39px;
+    content: "<H5>";
+    margin-left: -3.5em;
+    width: 3.5em;
 }
 
 h6::before {
     font-size: 80%;
     color: lightgray;
     display: inline-block;
-    content: "H6";
-    margin-left: -37px;
-    width: 37px;
+    content: "<H6>";
+    margin-left: -3.5em;
+    width: 3.5em;
 }
 
 table {
-    margin: 0 auto;
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
 
-table:has(tbody) td {
-    padding: 3px 5px;
-    border: 1px lightgray solid;
+table:not(:has(tbody)) th {
+    text-align: center;
 }
 
 table:has(tbody) thead {
-    background: azure;
+    background: lightgray;
 }
 
 table:has(tbody) thead th {
-    padding: 3px 5px;
-    border: 1px lightgray solid;
+    padding: 3px;
+    border-left: 1px white solid;
+    border-right: 1px white solid;
+    border-top: 1px gray solid;
+    border-bottom: 1px gray solid;
 }
 
-table:has(tbody) thead tr {
-    border: 1px lightgray solid;
+table:has(tbody) td {
+    padding: 3px;
+    border-bottom: 1px lightgray solid;
 }
 
 img {
@@ -134,9 +166,25 @@ img {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
 
-hr {
-    margin: 16px 0px;
-    border-color: lightskyblue;
+ul, ol {
+    padding-left: 1.5em;
+}
+
+pre {
+    font-size: 90%;
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    /* padding: 0.5em; */
+}
+
+@media print {
+    h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
+      display: none;
+    }
 }

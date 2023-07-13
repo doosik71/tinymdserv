@@ -2,13 +2,11 @@
 
 ## Header 2
 
+- [Subdir](subdir)
+- [Subdir without postfix](subdir/index)
+- [Subdir with full name](subdir/index.md)
+
 ### Header 3
-
-#### Header 4
-
-##### Header 5
-
-##### Header 6
 
 - Math expression:
 $$
@@ -16,7 +14,7 @@ $$
 $$
 - Inline math: $1 \over \pi$.
 
-- Code:
+#### Header 4
 
 ```javascript
 import express from 'express';
@@ -28,9 +26,21 @@ app.listen(port, () => {
 });
 ```
 
+```text
+import express from 'express';
+
+const app = express();
+
+app.listen(port, () => {
+    console.log(`Now listening on port ${port}`);
+});
+```
+
+##### Header 5
+
 - Inline code: `ENTER`.
 
-- Table:
+##### Header 6
 
 | Table Caption |
 | ------------- |

@@ -1,6 +1,6 @@
 {
   "name": "tinymdserv",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Tiny Markdown Server",
   "preferGlobal": true,
   "main": "app.js",

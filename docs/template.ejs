@@ -10,13 +10,13 @@
     MathJax.Hub.Config({
       tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
     });
-</script>
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="/style.css">
   <title>
     <%=title %>
   </title>
-  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
@@ -31,6 +31,11 @@
   document.querySelectorAll('pre code').forEach(el => {
     hljs.highlightElement(el);
   });
+</script>
+<script type="text/javascript" src="/autoupdate.js">
+</script>
+<script type="text/javascript">
+    autoupdate_register(1);
 </script>
 
 </html>
