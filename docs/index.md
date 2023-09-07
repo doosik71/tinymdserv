@@ -1,5 +1,10 @@
 # Tiny Markdown Server
 
+<form action="/search">
+    <input type="text" name="q" />
+    <input type="submit" value="Search" />
+</form>
+
 ## Header 2
 
 - [Subdir](subdir)
@@ -17,6 +22,8 @@ $$
 #### Header 4
 
 ```javascript
+// This is javascript
+
 import express from 'express';
 
 const app = express();
@@ -27,6 +34,8 @@ app.listen(port, () => {
 ```
 
 ```text
+// This is text
+
 import express from 'express';
 
 const app = express();

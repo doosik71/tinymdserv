@@ -1,0 +1,22 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta lang="en" />
+  <link rel="stylesheet" href="/css/style.css">
+  <title>Search: <%=title %></title>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Search: "<%=title %>"</h2>
+    <ul>
+    <% content.forEach(path => { %><li><a href='<%-path %>'><%-path %></a></li>
+    <% }) %></ul>
+    <hr/>
+    <a href="https://www.npmjs.com/package/tinymdserv">Tiny Markdown Server</a>
+    </div>
+</body>
+
+</html>

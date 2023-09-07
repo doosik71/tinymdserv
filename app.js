@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import express from 'express';
+import os from 'os';
 import path from 'path';
 import { marked } from 'marked';
 import * as fs from 'node:fs';
@@ -32,12 +33,15 @@ app.get('*.md', doc_handler);
 
 app.get('*.__datetime__', datetime_handler);
 
+app.get('/search', search_handler);
+
 app.get('*.mp4', mp4_handler);
 
 app.use(express.static(docs_path))
 
 app.listen(port, () => {
-    console.log(`Now listening on port ${port} with docs_path=${docs_path}`);
+    const address = 'http://' + get_ip_address() + (port == 80 ? '' : `:${port}`) + '/';
+    console.log(`Server started on ${address} with docs_path=${docs_path}`);
 });
 
 app.get('*', default_handler);
@@ -67,6 +71,7 @@ function doc_handler(req, res) {
         var content = marked(doc, { "mangle": false, headerIds: false });
         res.render('template.ejs', { "title": title, "content": content });
     } catch (error) {
+        console.log(error);
         res.status(500).send('Internal error!');
     }
 }
@@ -76,16 +81,63 @@ function datetime_handler(req, res) {
         const req_url = decodeURIComponent(req.url);
         const file_path = req_url.substring(0, req_url.length - '.__datetime__'.length);
 
-        fs.stat(docs_path + file_path, function(err, stats){
+        fs.stat(docs_path + file_path, function (err, stats) {
             if (err) {
-                res.status(400).send('Bad request!');        
+                res.status(400).send('Bad request!');
             } else {
                 res.send(stats.mtime.toLocaleString());
             }
         });
     } catch (error) {
+        console.log(error);
         res.status(500).send('Internal error!');
     }
+}
+
+function search_handler(req, res) {
+    try {
+        const req_url = 'http://127.0.0.1' + decodeURIComponent(req.url);
+        const query = new URL(req_url).searchParams.get('q');
+        var file_list = search_files(docs_path, query);
+
+        res.render('search.ejs', { "title": query, "content": file_list });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal error!');
+    }
+}
+
+function search_files(directory, query) {
+    const files_matching = [];
+    const prefix_length = directory.length;
+    const search_string = query.toLowerCase()
+
+    function search(directory) {
+        const files = fs.readdirSync(directory);
+
+        for (const file of files) {
+            const file_path = path.join(directory, file);
+
+            if (fs.statSync(file_path).isDirectory()) {
+                search(file_path);
+            } else {
+                const extension = path.extname(file_path).toLowerCase();
+
+                if (extension !== '.md' && extension !== '.html')
+                    continue;
+            
+                const content = fs.readFileSync(file_path, 'utf8').toLowerCase();
+                if (!content.includes(search_string)) 
+                    continue;
+
+                files_matching.push(file_path.substring(prefix_length).replace(/\\/g, '/'));
+            }
+        }
+    }
+
+    search(directory);
+
+    return files_matching;
 }
 
 function mp4_handler(req, res) {
@@ -125,6 +177,7 @@ function mp4_handler(req, res) {
             video_stream.pipe(res);
         }
     } catch (error) {
+        console.log(error);
         res.status(500).send(`Internal error!: ${error}.`);
     }
 }
@@ -143,4 +196,20 @@ function default_handler(req, res) {
     }
 
     res.status(404).send('404 Not Found!');
+}
+
+function get_ip_address() {
+    const networkInterfaces = os.networkInterfaces();
+    const ipAddresses = [];
+
+    Object.keys(networkInterfaces).forEach((interfaceName) => {
+        const interfaces = networkInterfaces[interfaceName];
+        for (const iface of interfaces) {
+            if (!iface.internal && iface.family === 'IPv4') {
+                ipAddresses.push(iface.address);
+            }
+        }
+    });
+
+    return ipAddresses.length >= 1 ? ipAddresses[0] : '127.0.0.1';
 }
