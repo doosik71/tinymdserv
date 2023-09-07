@@ -33,6 +33,25 @@ Hello
 </html>
 ```
 
+- Create template docs/search.ejs
+
+```html
+<html>
+<head>
+<meta charset="utf-8" />
+<meta lang="en" />
+<title>
+<%=title %>
+</title>
+</head>
+<body>
+<ul>
+<% content.forEach(path => { %><li><a href='<%-path %>'><%-path %></a></li>
+<% }) %></ul>
+</body>
+</html>
+```
+
 ## Run
 
 ```bash
