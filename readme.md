@@ -70,3 +70,8 @@ tinymdserv 80
 ```bash
 tinymdserv 80 C:\docs
 ```
+
+```bash
+node app.js 8080 ./docs
+```
+

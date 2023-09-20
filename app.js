@@ -63,13 +63,16 @@ const datetime_option = {
 function doc_handler(req, res) {
     try {
         const req_url = decodeURIComponent(req.url);
-        console.log(`${(new Date()).toLocaleString('en-US', datetime_option)}, ${req.socket.remoteAddress}, ${req_url}`);
+        const page = new URL('http://127.0.0.1' + req_url).searchParams.get('page');
+        const file_path = req_url.split('?')[0];
 
-        var doc = fs.readFileSync(docs_path + req_url, 'utf8');
+        console.log(`${(new Date()).toLocaleString('en-US', datetime_option)}, ${req.socket.remoteAddress}, ${req_url}`);
+        
+        var doc = fs.readFileSync(docs_path + file_path, 'utf8');
         var title = doc.match(/^# .*?(?=\r?\n)/);
-        title = title ? title[0].substring(1).trim() : req_url;
+        title = title ? title[0].substring(1).trim() : file_path;
         var content = marked(doc, { "mangle": false, headerIds: false });
-        res.render('template.ejs', { "title": title, "content": content });
+        res.render('template.ejs', { "title": title, "content": content, "page": page });
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal error!');
@@ -81,6 +84,8 @@ function datetime_handler(req, res) {
         const req_url = decodeURIComponent(req.url);
         const file_path = req_url.substring(0, req_url.length - '.__datetime__'.length);
 
+        // console.log(`${(new Date()).toLocaleString('en-US', datetime_option)}, ${req.socket.remoteAddress}, ${req_url}`);
+        
         fs.stat(docs_path + file_path, function (err, stats) {
             if (err) {
                 res.status(400).send('Bad request!');
@@ -96,9 +101,9 @@ function datetime_handler(req, res) {
 
 function search_handler(req, res) {
     try {
-        const req_url = 'http://127.0.0.1' + decodeURIComponent(req.url);
-        const query = new URL(req_url).searchParams.get('q');
-        var file_list = search_files(docs_path, query);
+        const req_url = decodeURIComponent(req.url);
+        const query = new URL('http://127.0.0.1' + req_url).searchParams.get('q');
+        var file_list = (query == null) ? [] : search_files(docs_path, query);
 
         res.render('search.ejs', { "title": query, "content": file_list });
     } catch (error) {

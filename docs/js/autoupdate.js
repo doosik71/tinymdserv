@@ -1,5 +1,5 @@
 var remote_datetime = null;
-const datetime_url = window.location.href + ".__datetime__";
+const datetime_url = window.location.href.split("?")[0] + ".__datetime__";
 
 async function autoupdate_get_datetime() {
   let response = await fetch(datetime_url);
