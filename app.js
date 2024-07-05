@@ -5,6 +5,7 @@ import os from 'os';
 import path from 'path';
 import { marked } from 'marked';
 import * as fs from 'node:fs';
+import mermaidAPI from 'mermaid';
 
 //////////////////////
 // Global variables //
@@ -82,6 +83,19 @@ function doc_handler(req, res) {
         let doc = fs.readFileSync(docs_path + file_path, 'utf8');
         let title = doc.match(/^# .*?(?=\r?\n)/);
         title = title ? title[0].substring(1).trim() : file_path;
+
+        marked.use({
+            renderer: {
+                code(code, infostring) {
+                    const lang = (infostring || '').match(/\S*/)[0];
+                    if (lang === 'mermaid')
+                        return `<div class="text-center"><div class="mermaid">${code}</div></div>`;
+                    else
+                        return `<pre><code>${marked(code, { "mangle": false, headerIds: false })}</code></pre>`;
+                }
+            }
+        });
+
         let content = marked(doc, { "mangle": false, headerIds: false });
 
         let dict_params = {};
@@ -89,7 +103,13 @@ function doc_handler(req, res) {
             dict_params[key] = value;
         });
 
-        res.render('template.ejs', { "title": title, "content": content, "page": page, "params": dict_params });
+        res.render('template.ejs',
+            {
+                "title": title,
+                "content": content,
+                "page": page,
+                "params": dict_params
+            });
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal error!');

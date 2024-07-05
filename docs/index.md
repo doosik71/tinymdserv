@@ -77,3 +77,13 @@ app.listen(port, () => {
 | -------- | -------- | -------- | -------- | -------- |
 | Text 1   | Text 2   | Text 3   | Text 4   | Text 5   |
 | Text 1   | Text 2   | Text 3   | Text 4   | Text 5   |
+
+## Mermaid
+
+```mermaid
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+```
