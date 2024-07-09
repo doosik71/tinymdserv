@@ -91,7 +91,7 @@ function doc_handler(req, res) {
                     if (lang === 'mermaid')
                         return `<div class="text-center"><div class="mermaid">${code}</div></div>`;
                     else
-                        return `<pre><code>${marked(code, { "mangle": false, headerIds: false })}</code></pre>`;
+                        return `<pre><code>${escapeHtml(code)}</code></pre>`;
                 }
             }
         });
@@ -116,6 +116,13 @@ function doc_handler(req, res) {
     }
 }
 
+function escapeHtml(html) {
+    return html.replace(/&/g, '&amp;')
+               .replace(/</g, '&lt;')
+               .replace(/>/g, '&gt;')
+               .replace(/"/g, '&quot;')
+               .replace(/'/g, '&#039;');
+}
 function datetime_handler(req, res) {
     try {
         const req_url = decodeURIComponent(req.url);
