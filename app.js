@@ -84,6 +84,14 @@ function doc_handler(req, res) {
         let title = doc.match(/^# .*?(?=\r?\n)/);
         title = title ? title[0].substring(1).trim() : file_path;
 
+        function escapeMathUnderscore(text) {
+            return text.replace(/(\${1,2})([^\$]*?)(\${1,2})/g, (match, p1, p2, p3) => {
+                return p1 + p2.replace(/_/g, '\\_') + p3;
+            });
+        }
+
+        doc = escapeMathUnderscore(doc);
+
         marked.use({
             renderer: {
                 code(code, infostring) {
