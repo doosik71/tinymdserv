@@ -3,9 +3,21 @@
 import express from 'express';
 import os from 'os';
 import path from 'path';
+import https from 'https';
+import http from 'http';
 import { marked } from 'marked';
 import * as fs from 'node:fs';
-import mermaidAPI from 'mermaid';
+
+// SSL certificate file path.
+const key_path = 'server.key';
+const cert_path = 'server.crt';
+
+// Check if SSL files exist
+const use_https = fs.existsSync(key_path) && fs.existsSync(cert_path);
+
+if (!use_https) {
+    console.log("'server.crt' or 'server.key' cannot be found!");
+}
 
 //////////////////////
 // Global variables //
@@ -22,7 +34,7 @@ function main() {
 
     // Get port number from command line arguments.
     let argnum = parseInt(process.argv.slice(2)[0]);
-    const port = isNaN(argnum) ? 80 : argnum;
+    const port = isNaN(argnum) ? (use_https ? 443 : 80) : argnum;
 
     // Set root path and docs path.
     docs_path = process.argv.slice(3)[0];
@@ -49,10 +61,23 @@ function main() {
 
     app.get('*', default_handler);
 
-    app.listen(port, () => {
-        const address = 'http://' + get_ip_address() + (port == 80 ? '' : `:${port}`) + '/';
-        console.log(`Server started on ${address} with docs_path=${docs_path}`);
-    });
+    // Start server
+    if (use_https) {
+        // HTTPS server
+        https.createServer({
+            key: fs.readFileSync(key_path),
+            cert: fs.readFileSync(cert_path)
+        }, app).listen(port, () => {
+            const address = 'https://' + get_ip_address() + (port == 443 ? '' : `:${port}`) + '/';
+            console.log(`HTTPS Server started on ${address} with docs_path=${docs_path}`);
+        });
+    } else {
+        // HTTP server
+        http.createServer(app).listen(port, () => {
+            const address = 'http://' + get_ip_address() + (port == 80 ? '' : `:${port}`) + '/';
+            console.log(`HTTP Server started on ${address} with docs_path=${docs_path}`);
+        });
+    }
 };
 
 main();
