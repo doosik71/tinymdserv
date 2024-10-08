@@ -109,20 +109,30 @@ function doc_handler(req, res) {
         let title = doc.match(/^# .*?(?=\r?\n)/);
         title = title ? title[0].substring(1).trim() : file_path;
 
-        function escapeMathNewline(text) {
-            return text.replace(/(\${1,2})([^\$]*?)(\${1,2})/g, (match, p1, p2, p3) => {
-                return p1 + p2.replace(/\\\\/g, '\\\\\\\\') + p3;
+        function escapeMath(text) {
+            const text1 = text.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
+                return '$' + p.replace(/\\/g, '!!!BACKSLASH!!!') + '$';
             });
+            const text2 = text1.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
+                return '$$' + p.replace(/\\/g, '!!!BACKSLASH!!!') + '$$';
+            });
+            const text3 = text2.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
+                return '$' + p.replace(/_/g, '!!!UNDERSCORE!!!') + '$';
+            });
+            const text4 = text3.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
+                return '$$' + p.replace(/_/g, '!!!UNDERSCORE!!!') + '$$';
+            });
+            const text5 = text4.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
+                return '$' + p.replace(/\*/g, '!!!STAR!!!') + '$';
+            });
+            const text6 = text5.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
+                return '$$' + p.replace(/\*/g, '!!!STAR!!!') + '$$';
+            });
+
+            return text6;
         }
 
-        function escapeMathUnderscore(text) {
-            return text.replace(/(\${1,2})([^\$]*?)(\${1,2})/g, (match, p1, p2, p3) => {
-                return p1 + p2.replace(/_/g, '\\_') + p3;
-            });
-        }
-
-        doc = escapeMathNewline(doc);
-        doc = escapeMathUnderscore(doc);
+        doc = escapeMath(doc);
 
         marked.use({
             renderer: {
@@ -137,6 +147,31 @@ function doc_handler(req, res) {
         });
 
         let content = marked(doc, { "mangle": false, headerIds: false });
+
+        function uncapeMath(text) {
+            const text1 = text.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
+                return '$' + p.replace(/!!!BACKSLASH!!!/g, '\\') + '$';
+            });
+            const text2 = text1.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
+                return '$$' + p.replace(/!!!BACKSLASH!!!/g, '\\') + '$$';
+            });
+            const text3 = text2.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
+                return '$' + p.replace(/!!!UNDERSCORE!!!/g, '_') + '$';
+            });
+            const text4 = text3.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
+                return '$$' + p.replace(/!!!UNDERSCORE!!!/g, '_') + '$$';
+            });
+            const text5 = text4.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
+                return '$' + p.replace(/!!!STAR!!!/g, '*') + '$';
+            });
+            const text6 = text5.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
+                return '$$' + p.replace(/!!!STAR!!!/g, '*') + '$$';
+            });
+
+            return text6;
+        }
+
+        content = uncapeMath(content);
 
         let dict_params = {};
         params.forEach((value, key) => {
