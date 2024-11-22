@@ -8,6 +8,8 @@ import http from 'http';
 import { marked } from 'marked';
 import * as fs from 'node:fs';
 
+const version = '1.0.23';  
+
 // SSL certificate file path.
 const key_path = 'server.key';
 const cert_path = 'server.crt';
@@ -30,6 +32,13 @@ let docs_path;
 ///////////////////
 
 function main() {
+    const args = process.argv.slice(2);
+
+    if (args.includes('--version') || args.includes('-v')) {
+        console.log(`Version: ${version}`);
+        return;
+    }
+
     const app = express();
 
     // Get port number from command line arguments.
@@ -96,6 +105,43 @@ const datetime_option = {
     hour12: false
 };
 
+const escapeMap = {
+    '\\': '!!!/BACKSLASH/!!!',
+    '_': '!!!/UNDERSCORE/!!!',
+    '*': '!!!/STAR/!!!',
+    '`': '!!!/BACKTICK/!!!',
+    "'": '!!!/QUOTE/!!!',
+    '"': '!!!/DOUBLEQUOTE/!!!' };
+
+const unescapeMap = Object.entries(escapeMap).reduce(
+    (acc, [key, value]) => ({ ...acc, [value]: key }),
+    {}
+);
+
+function escapeMath(text) {
+    const regex = /(\$\$?)([^$]*?)\1/g;
+
+    return text.replace(regex, (match, delimiter, content) => {
+        let escaped = content;
+        Object.entries(escapeMap).forEach(([char, replacement]) => {
+            escaped = escaped.replace(new RegExp(`\\${char}`, 'g'), replacement);
+        });
+        return `${delimiter}${escaped}${delimiter}`;
+    });
+}
+
+function unescapeMath(text) {
+    const regex = /(\$\$?)([^$]*?)\1/g;
+
+    return text.replace(regex, (match, delimiter, content) => {
+        let unescaped = content;
+        Object.entries(unescapeMap).forEach(([placeholder, char]) => {
+            unescaped = unescaped.replace(new RegExp(placeholder, 'g'), char);
+        });
+        return `${delimiter}${unescaped}${delimiter}`;
+    });
+}
+
 function doc_handler(req, res) {
     try {
         const req_url = decodeURIComponent(req.url);
@@ -108,29 +154,6 @@ function doc_handler(req, res) {
         let doc = fs.readFileSync(docs_path + file_path, 'utf8');
         let title = doc.match(/^# .*?(?=\r?\n)/);
         title = title ? title[0].substring(1).trim() : file_path;
-
-        function escapeMath(text) {
-            const text1 = text.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
-                return '$' + p.replace(/\\/g, '!!!BACKSLASH!!!') + '$';
-            });
-            const text2 = text1.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
-                return '$$' + p.replace(/\\/g, '!!!BACKSLASH!!!') + '$$';
-            });
-            const text3 = text2.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
-                return '$' + p.replace(/_/g, '!!!UNDERSCORE!!!') + '$';
-            });
-            const text4 = text3.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
-                return '$$' + p.replace(/_/g, '!!!UNDERSCORE!!!') + '$$';
-            });
-            const text5 = text4.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
-                return '$' + p.replace(/\*/g, '!!!STAR!!!') + '$';
-            });
-            const text6 = text5.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
-                return '$$' + p.replace(/\*/g, '!!!STAR!!!') + '$$';
-            });
-
-            return text6;
-        }
 
         doc = escapeMath(doc);
 
@@ -148,30 +171,7 @@ function doc_handler(req, res) {
 
         let content = marked(doc, { "mangle": false, headerIds: false });
 
-        function uncapeMath(text) {
-            const text1 = text.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
-                return '$' + p.replace(/!!!BACKSLASH!!!/g, '\\') + '$';
-            });
-            const text2 = text1.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
-                return '$$' + p.replace(/!!!BACKSLASH!!!/g, '\\') + '$$';
-            });
-            const text3 = text2.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
-                return '$' + p.replace(/!!!UNDERSCORE!!!/g, '_') + '$';
-            });
-            const text4 = text3.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
-                return '$$' + p.replace(/!!!UNDERSCORE!!!/g, '_') + '$$';
-            });
-            const text5 = text4.replace(/\$([^\$]*?)(\$)/g, (match, p) => {
-                return '$' + p.replace(/!!!STAR!!!/g, '*') + '$';
-            });
-            const text6 = text5.replace(/\$\$([^\$]*?)(\$\$)/g, (match, p) => {
-                return '$$' + p.replace(/!!!STAR!!!/g, '*') + '$$';
-            });
-
-            return text6;
-        }
-
-        content = uncapeMath(content);
+        content = unescapeMath(content);
 
         let dict_params = {};
         params.forEach((value, key) => {
@@ -198,6 +198,7 @@ function escapeHtml(html) {
                .replace(/"/g, '&quot;')
                .replace(/'/g, '&#039;');
 }
+
 function datetime_handler(req, res) {
     try {
         const req_url = decodeURIComponent(req.url);
