@@ -95,6 +95,8 @@ It allows you to host your Markdown files with minimal configuration and include
 
 ## Release Notes
 
+- v1.0.24
+  - Fix math expression. Seperate '$' and '$$'.
 - v1.0.23
   - Fix math expression escaping for backtick and quote.
 - v1.0.22

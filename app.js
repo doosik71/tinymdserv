@@ -119,26 +119,44 @@ const unescapeMap = Object.entries(escapeMap).reduce(
 );
 
 function escapeMath(text) {
-    const regex = /(\$\$?)([^$]*?)\1/g;
+    const regex1 = /((^|(?<=[^\\$]))\$)([^$\n]+?)((?<=[^\\$])\$)/g;
+    const regex2 = /((^|(?<=[^\\$]))\$\$)([^$]+?)((?<=[^\\$])\$\$)/g;
 
-    return text.replace(regex, (match, delimiter, content) => {
+    const result = text.replace(regex1, (_match, _del1, _pref, content, _del2) => {
         let escaped = content;
         Object.entries(escapeMap).forEach(([char, replacement]) => {
             escaped = escaped.replace(new RegExp(`\\${char}`, 'g'), replacement);
         });
-        return `${delimiter}${escaped}${delimiter}`;
+        return `$${escaped}$`;
+    });
+
+    return result.replace(regex2, (_match, _del1, _pref, content, _del2) => {
+        let escaped = content;
+        Object.entries(escapeMap).forEach(([char, replacement]) => {
+            escaped = escaped.replace(new RegExp(`\\${char}`, 'g'), replacement);
+        });
+        return `$$${escaped}$$`;
     });
 }
 
 function unescapeMath(text) {
-    const regex = /(\$\$?)([^$]*?)\1/g;
+    const regex1 = /((^|(?<=[^\\$]))\$)([^$\n]+?)((?<=[^\\$])\$)/g;
+    const regex2 = /((^|(?<=[^\\$]))\$\$)([^$]+?)((?<=[^\\$])\$\$)/g;
 
-    return text.replace(regex, (match, delimiter, content) => {
+    const result = text.replace(regex1, (_match, _del1, _pref, content, _del2) => {
         let unescaped = content;
         Object.entries(unescapeMap).forEach(([placeholder, char]) => {
             unescaped = unescaped.replace(new RegExp(placeholder, 'g'), char);
         });
-        return `${delimiter}${unescaped}${delimiter}`;
+        return `$${unescaped}$`;
+    });
+
+    return result.replace(regex2, (_match, _del1, _pref, content, _del2) => {
+        let unescaped = content;
+        Object.entries(unescapeMap).forEach(([placeholder, char]) => {
+            unescaped = unescaped.replace(new RegExp(placeholder, 'g'), char);
+        });
+        return `$$${unescaped}$$`;
     });
 }
 
