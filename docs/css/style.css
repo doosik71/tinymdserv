@@ -1,135 +1,95 @@
 :root {
-    /* Browser default font-size is 16px, this way 1 rem = 10px */
-    font-size: 62.5%;
+    font-size: 95%;
 }
 
 html {
-    font-family: "Open Sans", sans-serif;
-    color: black;
-    background-color: white;
-    text-size-adjust: none;
+    font-family: "Segoe UI", "Droid Sans", "Helvetica Neue",
+        "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+        "Fira Sans", sans-serif;
 }
 
 body {
-    margin: 1em;
-    font-size: 1.6rem;
     display: flex;
-    overflow-x: hidden;
     justify-content: center;
+    overflow-x: hidden;
 }
 
-.container {
-    max-width: 8in;
+article {
+    max-width: 7.4in;
     width: 100%;
-    padding: 0px;
 }
 
 a {
-    text-decoration: none;
     color: dodgerblue;
+    text-decoration: none;
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-h1 {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-h2, h3, h4, h5, h6 {
-    margin-top: 1em;
-    margin-bottom: 0.5em;
+h1, h2, h3, h4, h5, h6 {
+    color: DimGray;
+    font-weight: bold;
+    margin: 1em 0em;
 }
 
 h1 {
     font-size: 2em;
-    font-weight: bold;
-    background-color: azure;
-    padding: 0.2em;
-    border-top: 3px solid lightskyblue;
-    border-bottom: 3px solid lightskyblue;
 }
 
 h2 {
     font-size: 1.6em;
-    font-weight: bold;
-    border-bottom: 2px solid lightgray;
 }
 
 h3 {
-    font-size: 1.3em;
-    font-weight: bold;
+    font-size: 1.4em;
 }
 
 h4 {
-    font-size: 1.2em;
-    font-weight: bold;
+    font-size: 1.3em;
 }
 
 h5 {
-    font-size: 1.1em;
-    font-weight: bold;
+    font-size: 1.2em;
 }
 
 h6 {
-    font-size: 1em;
-    font-weight: bold;
+    font-size: 1.1em;
+}
+
+h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
+    color: lightgray;
+    display: inline-block;
+    font-size: 80%;
+    padding-bottom: 0.1em;
+    margin-left: -3em;
+    margin-right: 1em;
+    text-align: center;
+    vertical-align: middle;
+    width: 2em;
+    border: 1px solid lightgray;
+    border-radius: 0.5em;
 }
 
 h1::before {
-    font-size: 80%;
-    color: lightgray;
-    display: inline-block;
-    content: "<H1>";
-    margin-left: -3.5em;
-    width: 3.5em;
+    content: "h1";
 }
 
 h2::before {
-    font-size: 80%;
-    color: lightgray;
-    display: inline-block;
-    content: "<H2>";
-    margin-left: -3.5em;
-    width: 3.5em;
+    content: "h2";
 }
 
 h3::before {
-    font-size: 80%;
-    color: lightgray;
-    display: inline-block;
-    content: "<H3>";
-    margin-left: -3.5em;
-    width: 3.5em;
+    content: "h3";
 }
 
 h4::before {
-    font-size: 80%;
-    color: lightgray;
-    display: inline-block;
-    content: "<H4>";
-    margin-left: -3.5em;
-    width: 3.5em;
+    content: "h4";
 }
 
 h5::before {
-    font-size: 80%;
-    color: lightgray;
-    display: inline-block;
-    content: "<H5>";
-    margin-left: -3.5em;
-    width: 3.5em;
+    content: "h5";
 }
 
 h6::before {
-    font-size: 80%;
-    color: lightgray;
-    display: inline-block;
-    content: "<H6>";
-    margin-left: -3.5em;
-    width: 3.5em;
+    content: "h6";
 }
 
 table {
@@ -160,27 +120,31 @@ table:has(tbody) td {
     border-bottom: 1px lightgray solid;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
+img, figcaption {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
+    font-weight: bold;
+    height: auto;
+    margin-top: 0.5em auto 0.5em auto;
+    max-width: 100%;
+    text-align: center;
 }
 
 ul, ol {
     padding-left: 1.5em;
 }
 
+code {
+    font-family: "Courier New", Courier, monospace;
+    background-color: lightgray;
+}
+
 pre {
     font-size: 90%;
-    background-color: #f3f3f3;
-    border: 1px solid lightgray;
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
-    /* padding: 0.5em; */
+}
+
+hr {
+    border: 0.5px lightgray solid;
+    margin: 2em 0em;
 }
 
 @media print {

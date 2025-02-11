@@ -1,9 +1,14 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
-  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta lang="en" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:description" content="description">
+  <meta property="og:title" content="title">
+  <meta property="og:type" content="article">
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <script type="text/x-mathjax-config">
@@ -20,17 +25,11 @@
 </head>
 
 <body>
-  <div class="container">
+  <article>
     <%-content %>
-    
-    <h3>Support request parameters by "params" dictionary.</h3>
-    <p>
-      params.page = <%= params.page %><br/>
-      params.file = <%= params.file %><br/>
-    </p>
-  <hr/>
+    <hr/>
     <a href="https://www.npmjs.com/package/tinymdserv">Tiny Markdown Server</a>
-    </div>
+  </article>
 </body>
 
 <script type="text/javascript">

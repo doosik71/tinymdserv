@@ -40,6 +40,9 @@ It allows you to host your Markdown files with minimal configuration and include
         <title><%=title %></title>
       </head>
       <body>
+        <article>
+          <%-content %>
+        </article>
         <%-content %>
       </body>
       </html>
@@ -55,11 +58,13 @@ It allows you to host your Markdown files with minimal configuration and include
       <title><%=title %></title>
       </head>
       <body>
-        <ul>
-        <% content.forEach(path => { %>
-          <li><a href='<%-path %>'><%-path %></a></li>
-        <% }) %>
-        </ul>
+        <article>
+          <ul>
+          <% content.forEach(path => { %>
+            <li><a href='<%-path %>'><%-path %></a></li>
+          <% }) %>
+          </ul>
+        </article>
       </body>
       </html>
       ```
@@ -95,6 +100,8 @@ It allows you to host your Markdown files with minimal configuration and include
 
 ## Release Notes
 
+- v1.0.25
+  - Update example page and default style.
 - v1.0.24
   - Fix math expression. Seperate '$' and '$$'.
 - v1.0.23

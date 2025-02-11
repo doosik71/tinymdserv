@@ -1,19 +1,56 @@
 # Tiny Markdown Server
 
-<form action="/search">
+<!-- <form action="/search">
     <input type="text" name="q" />
     <input type="submit" value="Search" />
-</form>
+</form> -->
+
+TinyMDServ is a lightweight Markdown server designed for rapid deployment of Markdown-based documentation.
+It allows you to host your Markdown files with minimal configuration and includes simple templating capabilities.
+
+TinyMDServ is a lightweight Markdown server designed for rapid deployment of Markdown-based documentation.
+It allows you to host your Markdown files with minimal configuration and includes simple templating capabilities.
+
+TinyMDServ is a lightweight Markdown server designed for rapid deployment of Markdown-based documentation.
+It allows you to host your Markdown files with minimal configuration and includes simple templating capabilities.
+
+TinyMDServ is a lightweight Markdown server designed for rapid deployment of Markdown-based documentation.
+It allows you to host your Markdown files with minimal configuration and includes simple templating capabilities.
 
 ## Header 2
 
+- This is level 1
+  - This is level 2
+    - This is level 3
+    - This is level 3
+
 ### Header 3
+
+- This is level 1
+  - This is level 2
+    - This is level 3
+    - This is level 3
 
 #### Header 4
 
+- This is level 1
+  - This is level 2
+    - This is level 3
+    - This is level 3
+
 ##### Header 5
 
+- This is level 1
+  - This is level 2
+    - This is level 3
+    - This is level 3
+
 ##### Header 6
+
+- This is level 1
+  - This is level 2
+    - This is level 3
+    - This is level 3
 
 ## Text
 
@@ -70,20 +107,11 @@ app.listen(port, () => {
 
 ## Table
 
-| Table Caption |
-| ------------- |
+<figcaption>Table Caption</figcaption>
 
 | Header 1 | Header 2 | Header 3 | Header 4 | Header 5 |
 | -------- | -------- | -------- | -------- | -------- |
 | Text 1   | Text 2   | Text 3   | Text 4   | Text 5   |
 | Text 1   | Text 2   | Text 3   | Text 4   | Text 5   |
 
-## Mermaid
-
-```mermaid
-  graph TD;
-      A-->B;
-      A-->C;
-      B-->D;
-      C-->D;
-```
+<figcaption>Figure Caption</figcaption>
