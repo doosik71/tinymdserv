@@ -1,0 +1,37 @@
+@import url("common.css");
+
+/*********
+Root
+*********/
+
+:root {
+    font-size: 100%;
+}
+
+/*********
+Article
+*********/
+
+article,
+.vscode-dark,
+.vscode-light {
+    max-width: 7.4in;
+}
+
+nav#page-navigator {
+    display: none;
+}
+
+/*********
+Media
+*********/
+
+@page {
+    size: portrait;
+}
+
+@media print {
+    code, kbd, pre {
+        white-space: pre-wrap;
+    }
+}

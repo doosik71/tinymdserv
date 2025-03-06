@@ -72,34 +72,42 @@ It allows you to host your Markdown files with minimal configuration and include
 3. **Run the Server**: Start the server by specifying an optional port number and document root path.
 
     ```bash
-    tinymdserv [<port_number>] [<docs_full_path>]
-    ```
+    Command:
+      tinymdserv
 
-    - Default port number is `80`.
-    - Default document path is `./docs`.
+    Options:
+      --version      Show version number                                   [boolean]
+      -p, --port     Set port number                          [number] [default: 80]
+      -d, --dir      Set document path                  [string] [default: "./docs"]
+      -f, --file     Set document default name        [string] [default: "index.md"]
+      -q, --quiet    Activate quiet mode                                   [boolean]
+          --help     Show help                                             [boolean]
+    ```
 
 ### Examples
 
 - Run on port 80 (default port):
 
     ```bash
-    tinymdserv 80
+    tinymdserv -p 80
     ```
 
 - Run on port 80 with a specific document directory:
 
     ```bash
-    tinymdserv 80 C:\docs
+    tinymdserv -p 80 -d C:\docs
     ```
 
 - Run using `node` directly (alternative method):
 
     ```bash
-    node app.js 8080 ./docs
+    node app.js -p 8080 -d ./docs
     ```
 
 ## Release Notes
 
+- v1.0.26
+  - Change command argument syntax. Add quiet mode.
 - v1.0.25
   - Update example page and default style.
 - v1.0.24

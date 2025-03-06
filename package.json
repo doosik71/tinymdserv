@@ -1,6 +1,6 @@
 {
   "name": "tinymdserv",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Tiny Markdown Server",
   "preferGlobal": true,
   "main": "app.js",
@@ -25,10 +25,11 @@
     "url": "https://github.com/doosik71/tinymdserv.git"
   },
   "dependencies": {
-    "ejs": "^3.1.9",
-    "express": ">=4.19.2",
-    "marked": "^5.1.0",
-    "mermaid": "^10.9.0",
-    "url": "^0.11.1"
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "marked": "^15.0.7",
+    "mermaid": "^11.4.1",
+    "url": "^0.11.4",
+    "yargs": "^17.7.2"
   }
 }

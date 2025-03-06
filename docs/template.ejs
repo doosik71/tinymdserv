@@ -9,6 +9,7 @@
   <meta property="og:description" content="description">
   <meta property="og:title" content="title">
   <meta property="og:type" content="article">
+
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <script type="text/x-mathjax-config">
@@ -18,18 +19,20 @@
   </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/theme/mkdocs.css">
   <title>
     <%=title %>
   </title>
 </head>
 
 <body>
-  <article>
+  <article id="container">
     <%-content %>
+  </article>
+  <footer id="footer" aria-hidden="true">
     <hr/>
     <a href="https://www.npmjs.com/package/tinymdserv">Tiny Markdown Server</a>
-  </article>
+  </footer>
 </body>
 
 <script type="text/javascript">
