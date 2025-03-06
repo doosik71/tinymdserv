@@ -115,3 +115,21 @@ app.listen(port, () => {
 | Text 1   | Text 2   | Text 3   | Text 4   | Text 5   |
 
 <figcaption>Figure Caption</figcaption>
+
+## Mermaid Example
+
+```mermaid
+graph TD
+    A[DeepSeek Model Family] --> B[Model 1: Basic]
+    A --> C[Model 2: Advanced]
+    A --> D[Model 3: Expert]
+    A --> E[Model 4: Optimized]
+    B --> F[Feature Set 1]
+    C --> G[Feature Set 2]
+    D --> H[Feature Set 3]
+    E --> I[Feature Set 4]
+    F --> J[Specialization A]
+    G --> K[Specialization B]
+    H --> L[Specialization C]
+    I --> M[Specialization D]
+```

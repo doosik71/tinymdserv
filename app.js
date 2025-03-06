@@ -212,12 +212,11 @@ function doc_handler(req, res) {
 
         marked.use({
             renderer: {
-                code(code, infostring) {
-                    const lang = (infostring || '').match(/\S*/)[0];
+                code({text, lang, escaped}) {
                     if (lang === 'mermaid')
-                        return `<div class="text-center"><div class="mermaid">${code}</div></div>`;
+                        return `<div class="text-center"><pre class="mermaid">${text}</pre></div>`;
                     else
-                        return `<pre><code>${code.text}</code></pre>`;
+                        return `<pre><code class="${lang}">${text}</code></pre>`;
                 }
             }
         });
