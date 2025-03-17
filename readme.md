@@ -106,6 +106,8 @@ It allows you to host your Markdown files with minimal configuration and include
 
 ## Release Notes
 
+- v1.0.27
+  - Fix search script.
 - v1.0.26
   - Change command argument syntax. Add quiet mode.
 - v1.0.25

@@ -32,11 +32,6 @@ function main() {
     const use_https = fs.existsSync(key_path) && fs.existsSync(cert_path);
 
     const argv = yargs(process.argv.slice(2))
-        // .option('version', {
-        //     alias: 'v',
-        //     type: 'boolean',
-        //     description: 'Print version info',
-        // })
         .option('port', {
             alias: 'p',
             type: 'number',
@@ -71,13 +66,13 @@ function main() {
     const app = express();
 
     // Set docs path and quiet mode.
-    docs_path = argv.dir;
+    docs_path = path.resolve(argv.dir);
     quiet = argv.quiet;
 
     if (!argv.quiet) {
         console.log('Version:', version);
         console.log('Port number:', argv.port);
-        console.log('Directory:', argv.dir);
+        console.log('Directory:', docs_path);
         console.log('Default name:', argv.file);
     }
 
