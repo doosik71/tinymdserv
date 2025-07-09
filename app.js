@@ -83,17 +83,25 @@ function main() {
         res.redirect(`/${argv.file}`);
     });
 
-    app.get('*.md', doc_handler);
-
-    app.get('*.__datetime__', datetime_handler);
-
     app.get('/search', search_handler);
 
-    app.get('*.mp4', mp4_handler);
+    app.use((req, res, next) => {
+        if (req.path.endsWith('.md')) {
+            doc_handler(req, res);
+        } else if (req.path.endsWith('.__datetime__')) {
+            datetime_handler(req, res);
+        } else if (req.path.endsWith('.mp4')) {
+            mp4_handler(req, res);
+        } else {
+            next();
+        }
+    });
 
     app.use(express.static(docs_path))
 
-    app.get('*', default_handler);
+    app.use((req, res, next) => {
+        default_handler(req, res);
+    });
 
     // Start server
     if (use_https) {
@@ -189,6 +197,30 @@ function unescapeMath(text) {
     });
 }
 
+/**
+ * Encodes a string to a Base64 string, compatible with URL-safe encoding.
+ * @param {string} str - The string to encode.
+ * @returns {string} The Base64 encoded string.
+ */
+function base64Encode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+        String.fromCharCode(parseInt(p1, 16))
+    ));
+}
+
+/**
+ * Decodes a Base64 string that was encoded with `base64Encode`.
+ * @param {string} str - The Base64 string to decode.
+ * @returns {string} The decoded string.
+ */
+function base64Decode(str) {
+    return decodeURIComponent(
+        Array.prototype.map.call(atob(str), c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join('')
+    );
+}
+
 function doc_handler(req, res) {
     try {
         const req_url = decodeURIComponent(req.url);
@@ -203,11 +235,13 @@ function doc_handler(req, res) {
         let title = doc.match(/^# .*?(?=\r?\n)/);
         title = title ? title[0].substring(1).trim() : file_path;
 
-        doc = escapeMath(doc);
+        const encoded = doc
+            .replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => `$$${base64Encode(inner)}$$`)
+            .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `$${base64Encode(inner)}$`);
 
         marked.use({
             renderer: {
-                code({text, lang, escaped}) {
+                code({ text, lang, escaped }) {
                     if (lang === 'mermaid')
                         return `<div class="text-center"><pre class="mermaid">${text}</pre></div>`;
                     else
@@ -218,7 +252,10 @@ function doc_handler(req, res) {
 
         let content = marked(doc, { "mangle": false, headerIds: false });
 
-        content = unescapeMath(content);
+        content = content
+            .replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => `$$${base64Decode(inner)}$$`)
+            .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `$${base64Decode(inner)}$`)
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
         let dict_params = {};
         params.forEach((value, key) => {
