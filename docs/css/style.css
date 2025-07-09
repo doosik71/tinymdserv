@@ -887,6 +887,32 @@ article div#search-results a {
     opacity: 0.3;
 }
 
+.slide-mode .nav-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1em;
+    color: var(--color-primary);
+    cursor: pointer;
+    user-select: none;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    padding: 0.2em;
+}
+
+.slide-mode .nav-arrow:hover {
+    opacity: 0.6;
+}
+
+.slide-mode .nav-arrow-left {
+    left: 0.5rem;
+}
+
+.slide-mode .nav-arrow-right {
+    right: 0.5rem;
+}
+
 .slide-mode article h2, 
 .slide-mode article h3, 
 .slide-mode article h4 {

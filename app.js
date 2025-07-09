@@ -235,7 +235,26 @@ function doc_handler(req, res) {
         let title = doc.match(/^# .*?(?=\r?\n)/);
         title = title ? title[0].substring(1).trim() : file_path;
 
-        const encoded = doc
+        // 페이지 파라메터가 있으면 문서를 페이지로 나눈다
+        if (page !== null) {
+            const pages = doc.split('\n---\n');
+            const pageIndex = parseInt(page);
+
+            if (pageIndex >= 0 && pageIndex < pages.length) {
+                doc = pages[pageIndex];
+                // 페이지별 타이틀 추출 (각 페이지의 첫 번째 헤더 사용)
+                const pageTitle = doc.match(/^# .*?(?=\r?\n)/);
+                if (pageTitle) {
+                    title = pageTitle[0].substring(1).trim();
+                }
+            } else {
+                // 유효하지 않은 페이지 인덱스인 경우 404 에러
+                res.status(404).send('Page not found!');
+                return;
+            }
+        }
+
+        doc = doc
             .replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => `$$${base64Encode(inner)}$$`)
             .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `$${base64Encode(inner)}$`);
 
@@ -250,9 +269,9 @@ function doc_handler(req, res) {
             }
         });
 
-        let content = marked(doc, { "mangle": false, headerIds: false });
+        doc = marked(doc, { "mangle": false, headerIds: false });
 
-        content = content
+        doc = doc
             .replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => `$$${base64Decode(inner)}$$`)
             .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `$${base64Decode(inner)}$`)
             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -265,7 +284,7 @@ function doc_handler(req, res) {
         res.render('template.ejs',
             {
                 "title": title,
-                "content": content,
+                "content": doc,
                 "page": page,
                 "params": dict_params
             });

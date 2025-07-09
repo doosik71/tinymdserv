@@ -26,7 +26,11 @@
   </title>
 </head>
 
-<body>
+<body<% if (typeof page !== 'undefined' && page !== null) { %> class="slide-mode"<% } %>>
+  <% if (typeof page !== 'undefined' && page !== null) { %>
+  <div class="nav-arrow nav-arrow-left" onclick="navigatePage(-1)">❮</div>
+  <div class="nav-arrow nav-arrow-right" onclick="navigatePage(1)">❯</div>
+  <% } %>
   <article id="container">
     <%-content %>
   </article>
@@ -46,5 +50,27 @@
 <script type="text/javascript">
   autoupdate_register(1);
 </script>
+<% if (typeof page !== 'undefined' && page !== null) { %>
+<script type="text/javascript">
+  function navigatePage(direction) {
+    const currentPage = <%- page || 0 %>;
+    const newPage = currentPage + direction;
+    if (newPage >= 0) {
+      const url = new URL(window.location);
+      url.searchParams.set('page', newPage);
+      window.location.href = url.toString();
+    }
+  }
+
+  // Add keyboard navigation
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowLeft') {
+      navigatePage(-1);
+    } else if (event.key === 'ArrowRight') {
+      navigatePage(1);
+    }
+  });
+</script>
+<% } %>
 
 </html>
