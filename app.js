@@ -140,87 +140,6 @@ const datetime_option = {
     hour12: false
 };
 
-const escapeMap = {
-    '\\': '&#x5C;',
-    '<': '&#x3C;',
-    '_': '&#x5F;',
-    '*': '&#x2A;',
-    '`': '&#x60;',
-    "'": '&#x27;',
-    '"': '&#x22;'
-};
-
-const unescapeMap = Object.entries(escapeMap).reduce(
-    (acc, [key, value]) => ({ ...acc, [value]: key }),
-    {}
-);
-
-function escapeMath(text) {
-    const regex1 = /((^|(?<=[^\\$]))\$)([^$\n]+?)((?<=[^\\$])\$)/g;
-    const regex2 = /((^|(?<=[^\\$]))\$\$)([^$]+?)((?<=[^\\$])\$\$)/g;
-
-    const result = text.replace(regex1, (_match, _del1, _pref, content, _del2) => {
-        let escaped = content;
-        Object.entries(escapeMap).forEach(([char, replacement]) => {
-            escaped = escaped.replace(new RegExp(`\\${char}`, 'g'), replacement);
-        });
-        return `$${escaped}$`;
-    });
-
-    return result.replace(regex2, (_match, _del1, _pref, content, _del2) => {
-        let escaped = content;
-        Object.entries(escapeMap).forEach(([char, replacement]) => {
-            escaped = escaped.replace(new RegExp(`\\${char}`, 'g'), replacement);
-        });
-        return `$$${escaped}$$`;
-    });
-}
-
-function unescapeMath(text) {
-    const regex1 = /((^|(?<=[^\\$]))\$)([^$\n]+?)((?<=[^\\$])\$)/g;
-    const regex2 = /((^|(?<=[^\\$]))\$\$)([^$]+?)((?<=[^\\$])\$\$)/g;
-
-    const result = text.replace(regex1, (_match, _del1, _pref, content, _del2) => {
-        let unescaped = content;
-        Object.entries(unescapeMap).forEach(([placeholder, char]) => {
-            unescaped = unescaped.replace(new RegExp(placeholder, 'g'), char);
-        });
-        return `$${unescaped}$`;
-    });
-
-    return result.replace(regex2, (_match, _del1, _pref, content, _del2) => {
-        let unescaped = content;
-        Object.entries(unescapeMap).forEach(([placeholder, char]) => {
-            unescaped = unescaped.replace(new RegExp(placeholder, 'g'), char);
-        });
-        return `$$${unescaped}$$`;
-    });
-}
-
-/**
- * Encodes a string to a Base64 string, compatible with URL-safe encoding.
- * @param {string} str - The string to encode.
- * @returns {string} The Base64 encoded string.
- */
-function base64Encode(str) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
-        String.fromCharCode(parseInt(p1, 16))
-    ));
-}
-
-/**
- * Decodes a Base64 string that was encoded with `base64Encode`.
- * @param {string} str - The Base64 string to decode.
- * @returns {string} The decoded string.
- */
-function base64Decode(str) {
-    return decodeURIComponent(
-        Array.prototype.map.call(atob(str), c =>
-            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        ).join('')
-    );
-}
-
 function doc_handler(req, res) {
     try {
         const req_url = decodeURIComponent(req.url);
@@ -255,8 +174,8 @@ function doc_handler(req, res) {
         }
 
         doc = doc
-            .replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => `$$${base64Encode(inner)}$$`)
-            .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `$${base64Encode(inner)}$`);
+            .replace(/\$\$([\s\S]+?)\$\$/g, (_, inner) => `<pre><code="latex_math_2">${inner}</code></pre>`)
+            .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `<pre><code="latex_math_1">${inner}</code></pre>`);
 
         marked.use({
             renderer: {
@@ -272,8 +191,8 @@ function doc_handler(req, res) {
         doc = marked(doc, { "mangle": false, headerIds: false });
 
         doc = doc
-            .replace(/\$\$([\s\S]*?)\$\$/g, (_, inner) => `$$${base64Decode(inner)}$$`)
-            .replace(/\$([^\n\r$]+?)\$/g, (_, inner) => `$${base64Decode(inner)}$`)
+            .replace(/<pre><code="latex_math_1">([^\n\r$]+?)<\/code><\/pre>/g, (_, inner) => `$${inner}$`)
+            .replace(/<pre><code="latex_math_2">([\s\S]+?)<\/code><\/pre>/g, (_, inner) => `$$${inner}$$`)
             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
         let dict_params = {};

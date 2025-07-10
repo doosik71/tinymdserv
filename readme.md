@@ -122,6 +122,8 @@ It allows you to host your Markdown files with minimal configuration and include
 
 ## Release Notes
 
+- v1.1.1
+  - Fix math handling
 - v1.1.0
   - Enhanced UI with modern mint green theme
   - Enhanced math rendering
